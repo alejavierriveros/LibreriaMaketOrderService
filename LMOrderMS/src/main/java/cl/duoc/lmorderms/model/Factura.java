@@ -1,0 +1,20 @@
+package cl.duoc.lmorderms.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "facturas")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Factura {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String numeroFactura;
+    private String fecha;
+    private double monto;
+}
