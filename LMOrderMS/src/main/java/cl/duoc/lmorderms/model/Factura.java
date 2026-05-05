@@ -1,5 +1,6 @@
 package cl.duoc.lmorderms.model;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 

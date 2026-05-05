@@ -15,10 +15,10 @@ public class Envio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "La dirección es obligatoria")
+    @NotBlank
     private String direccion;
 
-    @NotBlank(message = "La ciudad es obligatoria")
+    @NotBlank
     private String ciudad;
 
     private String estadoEnvio;
