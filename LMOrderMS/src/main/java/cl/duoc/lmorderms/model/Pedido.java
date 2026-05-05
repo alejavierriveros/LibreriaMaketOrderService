@@ -17,24 +17,22 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El userId es obligatorio")
-    private String userId;
+    @NotNull
+    private Long userId;
 
-    
     @ElementCollection
     @CollectionTable(name = "order_productos", joinColumns = @JoinColumn(name = "order_id"))
     @Column(name = "producto_id")
-    @NotEmpty(message = "Debe agregar al menos un producto")
+    @NotEmpty
     private List<Long> productosIds;
 
-    @Positive(message = "El total debe ser mayor a 0")
     private double total;
 
     private String estado;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "envio_id")
-    @NotNull(message = "El envío es obligatorio")
+    @NotNull
     private Envio envio;
 
     @OneToOne(cascade = CascadeType.ALL)

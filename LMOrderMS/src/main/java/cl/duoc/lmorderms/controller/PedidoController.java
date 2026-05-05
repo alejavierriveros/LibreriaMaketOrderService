@@ -1,40 +1,44 @@
 package cl.duoc.lmorderms.controller;
 
-import cl.duoc.lmorderms.model.*;
+import cl.duoc.lmorderms.dto.*;
+import cl.duoc.lmorderms.mappers.*;
 import cl.duoc.lmorderms.service.*;
-
-import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pedidos")
 public class PedidoController {
 
     @Autowired
-    private PedidoService pedidoService;
+    private PedidoService service;
 
     @PostMapping
-    public Pedido crear(@Valid @RequestBody Pedido pedido){
-        return pedidoService.crearPedido(pedido);
+    public PedidoDTO crear(@RequestBody PedidoDTO dto){
+        return PedidoMappers.toDTO(
+            service.crear(PedidoMappers.toEntity(dto))
+        );
     }
 
     @GetMapping
-    public List<Pedido> listar(){
-        return pedidoService.listar();
+    public java.util.List<PedidoDTO> listar(){
+        return service.listar()
+                .stream()
+                .map(PedidoMappers::toDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Pedido obtener(@PathVariable Long id){
-        return pedidoService.buscar(id);
+    public PedidoDTO obtener(@PathVariable Long id){
+        return PedidoMappers.toDTO(service.buscar(id));
     }
 
     @DeleteMapping("/{id}")
     public String eliminar(@PathVariable Long id){
-        pedidoService.eliminar(id);
-        return "Pedido eliminado";
+        service.eliminar(id);
+        return "Eliminado";
     }
 }

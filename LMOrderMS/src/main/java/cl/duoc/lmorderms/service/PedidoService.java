@@ -1,53 +1,87 @@
 package cl.duoc.lmorderms.service;
 
+import cl.duoc.lmorderms.dto.*;
 import cl.duoc.lmorderms.model.*;
 import cl.duoc.lmorderms.repository.*;
+import cl.duoc.lmorderms.exceptions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PedidoService {
 
     @Autowired
-    private PedidoRepository pedidoRepository;
+    private PedidoRepository repo;
 
-    public Pedido crearPedido(Pedido order){
+    @Autowired
+    private RestTemplate restTemplate;
 
-        // VALIDACIONES BÁSICAS
+    public Pedido crear(Pedido o){
 
-        if(order.getProductosIds() == null || order.getProductosIds().isEmpty()){
-            throw new RuntimeException("Debe ingresar productos");
+        // VALIDAR USUARIO
+        UserDTO user = restTemplate.getForObject(
+            "http://localhost:8081/api/users/" + o.getUserId(),
+            UserDTO.class
+        );
+
+        if(user == null){
+            throw new ResourceNotFoundException("Usuario no existe");
         }
 
-        // REGLAS DE NEGOCIO (sin consumo externo aún)
+        double total = 0;
 
-        order.setEstado("CREADO");
+        // VALIDAR PRODUCTOS
+        for(Long id : o.getProductosIds()){
+
+            ProductoDTO p = restTemplate.getForObject(
+                "http://localhost:8082/api/products/" + id,
+                ProductoDTO.class
+            );
+
+            if(p == null){
+                throw new ResourceNotFoundException("Producto no encontrado: " + id);
+            }
+
+            if(p.getStock() <= 0){
+                throw new BadRequestException("Producto sin stock: " + p.getTitulo());
+            }
+
+            total += p.getPrecio();
+        }
+
+        if(total <= 0){
+            throw new BadRequestException("Total inválido");
+        }
+
+        o.setTotal(total);
+        o.setEstado("CREADO");
 
         //  ENVÍO
-        order.getEnvio().setEstadoEnvio("PENDIENTE");
+        o.getEnvio().setEstadoEnvio("PENDIENTE");
 
-        // 🧾 FACTURA
-        Factura factura = new Factura();
-        factura.setNumeroFactura("FAC-" + System.currentTimeMillis());
-        factura.setFecha(java.time.LocalDate.now().toString());
-        factura.setMonto(order.getTotal()); // luego lo calculas tú
+        //  FACTURA
+        Factura f = new Factura();
+        f.setNumeroFactura("FAC-" + System.currentTimeMillis());
+        f.setFecha(java.time.LocalDate.now().toString());
+        f.setMonto(total);
 
-        order.setFactura(factura);
+        o.setFactura(f);
 
-        return pedidoRepository.save(order);
+        return repo.save(o);
     }
 
     public java.util.List<Pedido> listar(){
-        return pedidoRepository.findAll();
+        return repo.findAll();
     }
 
     public Pedido buscar(Long id){
-        return pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado"));
     }
 
     public void eliminar(Long id){
-        pedidoRepository.deleteById(id);
+        repo.deleteById(id);
     }
 }
