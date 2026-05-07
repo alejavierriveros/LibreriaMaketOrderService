@@ -1,26 +1,26 @@
 package cl.duoc.lmorderms.controller;
 
-import cl.duoc.lmorderms.dto.*;
+import cl.duoc.lmorderms.dtos.*;
 import cl.duoc.lmorderms.mappers.*;
 import cl.duoc.lmorderms.service.*;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/pedidos")
+@RequestMapping("/api/v1/pedidos")
 public class PedidoController {
 
     @Autowired
     private PedidoService service;
 
     @PostMapping
-    public PedidoDTO crear(@RequestBody PedidoDTO dto){
-        return PedidoMappers.toDTO(
-            service.crear(PedidoMappers.toEntity(dto))
-        );
+    public PedidoDTO crear(@RequestBody @Valid PedidoDTO dto){
+        return service.crear(dto)
+        ;
     }
 
     @GetMapping

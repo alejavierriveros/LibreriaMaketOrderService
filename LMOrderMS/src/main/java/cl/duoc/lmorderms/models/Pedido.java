@@ -1,4 +1,5 @@
-package cl.duoc.lmorderms.model;
+package cl.duoc.lmorderms.models;
+
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -18,7 +19,8 @@ public class Pedido {
     private Long id;
 
     @NotNull
-    private Long userId;
+    private Long clienteId;
+
 
     @ElementCollection
     @CollectionTable(name = "order_productos", joinColumns = @JoinColumn(name = "order_id"))
@@ -28,14 +30,14 @@ public class Pedido {
 
     private double total;
 
-    private String estado;
+//    private String estado;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "envio_id")
-    @NotNull
-    private Envio envio;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "envio_id")
+//    @NotNull
+//    private Envio envio;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "factura_id")
-    private Factura factura;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "factura_id")
+//    private Factura factura;
 }

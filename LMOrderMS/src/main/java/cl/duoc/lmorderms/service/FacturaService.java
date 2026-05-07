@@ -1,6 +1,6 @@
 package cl.duoc.lmorderms.service;
 
-import cl.duoc.lmorderms.model.*;
+import cl.duoc.lmorderms.models.*;
 import cl.duoc.lmorderms.repository.*;
 
 import org.springframework.beans.factory.annotation.Autowired;

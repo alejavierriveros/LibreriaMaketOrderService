@@ -1,7 +1,7 @@
 package cl.duoc.lmorderms.mappers;
 
-import cl.duoc.lmorderms.dto.*;
-import cl.duoc.lmorderms.model.*;
+import cl.duoc.lmorderms.dtos.*;
+import cl.duoc.lmorderms.models.*;
 
 public class FacturaMapper {
 

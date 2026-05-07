@@ -1,6 +1,6 @@
 package cl.duoc.lmorderms.controller;
 
-import cl.duoc.lmorderms.model.*;
+import cl.duoc.lmorderms.models.*;
 import cl.duoc.lmorderms.service.*;
 
 

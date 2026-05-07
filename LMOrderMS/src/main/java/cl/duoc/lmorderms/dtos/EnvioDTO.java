@@ -1,4 +1,4 @@
-package cl.duoc.lmorderms.dto;
+package cl.duoc.lmorderms.dtos;
 
 import lombok.*;
 

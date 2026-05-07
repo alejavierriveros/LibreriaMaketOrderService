@@ -1,4 +1,4 @@
-package cl.duoc.lmorderms.model;
+package cl.duoc.lmorderms.models;
 
 
 import jakarta.persistence.*;

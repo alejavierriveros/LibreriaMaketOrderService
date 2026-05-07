@@ -1,7 +1,10 @@
 package cl.duoc.lmorderms.service;
 
-import cl.duoc.lmorderms.dto.*;
-import cl.duoc.lmorderms.model.*;
+import cl.duoc.lmorderms.clients.ToAPICatalogFeing;
+import cl.duoc.lmorderms.clients.ToAPICustomerFeing;
+import cl.duoc.lmorderms.dtos.*;
+import cl.duoc.lmorderms.mappers.PedidoMappers;
+import cl.duoc.lmorderms.models.*;
 import cl.duoc.lmorderms.repository.*;
 import cl.duoc.lmorderms.exceptions.*;
 
@@ -9,40 +12,59 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class PedidoService {
 
     @Autowired
     private PedidoRepository repo;
 
+
+    ClienteOrderResponseDTO clienteOrderResponseDTO;
+
+
+    DireccionResponseDTO direccionResponseDTO;
+
     @Autowired
-    private RestTemplate restTemplate;
+    ToAPICustomerFeing toAPICustomerFeing;
 
-    public Pedido crear(Pedido o){
+    @Autowired
+    ToAPICatalogFeing toAPICatalogFeing;
 
-        // VALIDAR USUARIO
-        UserDTO user = restTemplate.getForObject(
-            "http://localhost:8081/api/users/" + o.getUserId(),
-            UserDTO.class
-        );
 
-        if(user == null){
-            throw new ResourceNotFoundException("Usuario no existe");
+    PedidoMappers pedidoMappers = new PedidoMappers();
+
+
+    public PedidoDTO crear(PedidoDTO dto){
+        clienteOrderResponseDTO =  toAPICustomerFeing.findById(dto.getClienteId());
+
+        if (clienteOrderResponseDTO == null) {
+            throw new ResourceNotFoundException("Cliente no encontrado");
         }
 
+
+        // VA
         double total = 0;
 
         // VALIDAR PRODUCTOS
-        for(Long id : o.getProductosIds()){
+        List<Long> productosIds = new ArrayList<>();
+        for(Long id : dto.getProductosIds()){
 
-            ProductoDTO p = restTemplate.getForObject(
-                "http://localhost:8082/api/products/" + id,
-                ProductoDTO.class
-            );
+            ProductoDTO p = toAPICatalogFeing.obtener(id);
+
+            /*TODO: Se creará carrito de compras como un MS aparte que valide ingreso de productos uno por uno, y envíe el detalle de compra a Pedido.
+            ya que la siguente fución (abajo) finalizaría el proceso si es que un producto de la lista no existe */
 
             if(p == null){
                 throw new ResourceNotFoundException("Producto no encontrado: " + id);
+            } else {
+                productosIds.add(p.getId());
             }
+
+           /*TODO: Adherido a lo anterior: Se creará carrito de compras como un MS aparte que valide ingreso de productos uno por uno, y envíe el detalle de compra a Pedido.
+            ya que la siguente fución (abajo) finalizaría el proceso si es que un producto de la lista no existe */
 
             if(p.getStock() <= 0){
                 throw new BadRequestException("Producto sin stock: " + p.getTitulo());
@@ -55,21 +77,22 @@ public class PedidoService {
             throw new BadRequestException("Total inválido");
         }
 
-        o.setTotal(total);
-        o.setEstado("CREADO");
 
-        //  ENVÍO
-        o.getEnvio().setEstadoEnvio("PENDIENTE");
+//        o.setEstado("CREADO");
+//
+//        //  ENVÍO
+//        o.getEnvio().setEstadoEnvio("PENDIENTE");
 
         //  FACTURA
-        Factura f = new Factura();
-        f.setNumeroFactura("FAC-" + System.currentTimeMillis());
-        f.setFecha(java.time.LocalDate.now().toString());
-        f.setMonto(total);
+//        Factura f = new Factura();
+//        f.setNumeroFactura("FAC-" + System.currentTimeMillis());
+//        f.setFecha(java.time.LocalDate.now().toString());
+//        f.setMonto(total);
+//
+//        o.setFactura(f);
 
-        o.setFactura(f);
-
-        return repo.save(o);
+        repo.save(pedidoMappers.toEntity(dto, total));
+        return dto;
     }
 
     public java.util.List<Pedido> listar(){
