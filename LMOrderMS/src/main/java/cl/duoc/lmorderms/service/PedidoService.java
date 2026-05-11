@@ -1,7 +1,7 @@
 package cl.duoc.lmorderms.service;
 
-import cl.duoc.lmorderms.clients.ToAPICatalogFeing;
-import cl.duoc.lmorderms.clients.ToAPICustomerFeing;
+import cl.duoc.lmorderms.clients.ToAPICatalogFeign;
+import cl.duoc.lmorderms.clients.ToAPICustomerFeign;
 import cl.duoc.lmorderms.dtos.*;
 import cl.duoc.lmorderms.mappers.PedidoMappers;
 import cl.duoc.lmorderms.models.*;
@@ -10,7 +10,6 @@ import cl.duoc.lmorderms.exceptions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,17 +27,17 @@ public class PedidoService {
     DireccionResponseDTO direccionResponseDTO;
 
     @Autowired
-    ToAPICustomerFeing toAPICustomerFeing;
+    ToAPICustomerFeign toAPICustomerFeign;
 
     @Autowired
-    ToAPICatalogFeing toAPICatalogFeing;
+    ToAPICatalogFeign toAPICatalogFeign;
 
 
     PedidoMappers pedidoMappers = new PedidoMappers();
 
 
     public PedidoDTO crear(PedidoDTO dto){
-        clienteOrderResponseDTO =  toAPICustomerFeing.findById(dto.getClienteId());
+        clienteOrderResponseDTO =  toAPICustomerFeign.findById(dto.getClienteId());
 
         if (clienteOrderResponseDTO == null) {
             throw new ResourceNotFoundException("Cliente no encontrado");
@@ -52,7 +51,7 @@ public class PedidoService {
         List<Long> productosIds = new ArrayList<>();
         for(Long id : dto.getProductosIds()){
 
-            ProductoDTO p = toAPICatalogFeing.obtener(id);
+            ProductoDTO p = toAPICatalogFeign.obtener(id);
 
             /*TODO: Se creará carrito de compras como un MS aparte que valide ingreso de productos uno por uno, y envíe el detalle de compra a Pedido.
             ya que la siguente fución (abajo) finalizaría el proceso si es que un producto de la lista no existe */

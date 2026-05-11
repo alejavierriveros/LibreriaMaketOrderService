@@ -2,9 +2,7 @@ package cl.duoc.lmorderms.clients;
 
 
 import cl.duoc.lmorderms.dtos.ClienteOrderResponseDTO;
-import cl.duoc.lmorderms.dtos.ProductoDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -12,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 // APIURL original sin Eureka y Gateway = "http://localhost:8082/clientes";
 
 @FeignClient(name = "LMCustomerMS", path = "/api/v1/clientes")
-public interface ToAPICustomerFeing {
+public interface ToAPICustomerFeign {
 
     @GetMapping("/{id}")
     ClienteOrderResponseDTO findById(@PathVariable Long id);
