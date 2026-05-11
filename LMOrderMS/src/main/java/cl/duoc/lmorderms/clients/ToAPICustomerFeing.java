@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 // APIName = LMCustomerMS;
 // APIURL original sin Eureka y Gateway = "http://localhost:8082/clientes";
 
-@FeignClient(name = "LMCustomerMS")
+@FeignClient(name = "LMCustomerMS", path = "/api/v1/clientes")
 public interface ToAPICustomerFeing {
 
     @GetMapping("/{id}")
