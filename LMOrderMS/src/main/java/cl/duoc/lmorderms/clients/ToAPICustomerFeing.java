@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-// APIName = "APICustomer";
-// APIURL = "http://localhost:8082/clientes";
+// APIName = LMCustomerMS;
+// APIURL original sin Eureka y Gateway = "http://localhost:8082/clientes";
 
-@FeignClient(name = "APICustomer", url = "http://localhost:8082/api/v1/clientes")
+@FeignClient(name = "LMCustomerMS")
 public interface ToAPICustomerFeing {
 
     @GetMapping("/{id}")
