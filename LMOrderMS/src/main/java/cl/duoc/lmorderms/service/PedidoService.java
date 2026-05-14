@@ -65,11 +65,12 @@ public class PedidoService {
            /*TODO: Adherido a lo anterior: Se creará carrito de compras como un MS aparte que valide ingreso de productos uno por uno, y envíe el detalle de compra a Pedido.
             ya que la siguente fución (abajo) finalizaría el proceso si es que un producto de la lista no existe */
 
-            if(p.getStock() <= 0){
-                throw new BadRequestException("Producto sin stock: " + p.getTitulo());
-            }
+                //Cambiar esta dfunción de producto a stock. Stock debe entregar si queda o no queda pedido. Se sacó el atributo stock en la entidad  Producto
+//            if(p.getStock() <= 0){
+//                throw new BadRequestException("Producto sin stock: " + p.getTitulo());
+//            }
 
-            total += p.getPrecio();
+            //total += p.getPrecio(); //Ya no se pide total desde producto sino que desde carrito ya que esta entidad calcula y envía el total de toda la compra.
         }
 
         if(total <= 0){
