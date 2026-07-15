@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/LMOrderMS.iml" filepath="$PROJECT_DIR$/.idea/LMOrderMS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LMOrderMS/LMOrderMS.iml" filepath="$PROJECT_DIR$/LMOrderMS/LMOrderMS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/LibreriaMaketOrderService.iml" filepath="$PROJECT_DIR$/.idea/LibreriaMaketOrderService.iml" />
     </modules>
   </component>
 </project>
